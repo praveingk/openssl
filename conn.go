@@ -438,6 +438,20 @@ func (c *Conn) Close() error {
 	return errs.Finalize()
 }
 
+// Close shuts down only the SSL connection
+func (c *Conn) CloseSSL() error {
+	c.mtx.Lock()
+	if c.is_shutdown {
+		c.mtx.Unlock()
+		return nil
+	}
+	c.is_shutdown = true
+	c.mtx.Unlock()
+	var errs utils.ErrorGroup
+	errs.Add(c.shutdownLoop())
+	return errs.Finalize()
+}
+
 func (c *Conn) read(b []byte) (int, func() error) {
 	if len(b) == 0 {
 		return 0, nil
