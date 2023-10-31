@@ -102,7 +102,7 @@ func (c *Certificate) CheckIP(ip net.IP, flags CheckFlags) error {
 	}
 
 	cip := unsafe.Pointer(&ip[0])
-	rv := C.X509_check_ip(c.x, (*C.char)(cip), C.size_t(len(ip)),
+	rv := C.X509_check_ip(c.x, (*C.uchar)(cip), C.size_t(len(ip)),
 		C.uint(flags))
 	if rv > 0 {
 		return nil
